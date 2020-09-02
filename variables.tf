@@ -35,23 +35,25 @@ variable "name_prefix" {
 }
 
 variable "custom_server_name" {
-  type        = string
   description = "Custom Server Name identifier"
+  type        = string
   default     = ""
 }
 
 variable "administrator_login" {
   description = "MariaDB administrator login"
   type        = string
+  default     = "dbadmin"
 }
 
 variable "administrator_password" {
-  description = "MariaDB administrator password. Strong Password : https://docs.microsoft.com/en-us/sql/relational-databases/security/strong-passwords?view=sql-server-2017"
+  description = "MariaDB administrator password. Auto-generated if empty. Strong Password : https://docs.microsoft.com/en-us/sql/relational-databases/security/strong-passwords?view=sql-server-2017"
   type        = string
+  default     = ""
 }
 
-variable "extra_tags" {
-  description = "Extra tags to add"
+variable "vnet_rules" {
+  description = "Map of vnet rules to create"
   type        = map(string)
   default     = {}
 }
@@ -59,6 +61,12 @@ variable "extra_tags" {
 variable "authorized_cidrs" {
   description = "Map of authorized cidrs, must be provided using remote states cloudpublic/cloudpublic/global/vars/terraform.state"
   type        = map(string)
+}
+
+variable "extra_tags" {
+  description = "Extra tags to add"
+  type        = map(string)
+  default     = {}
 }
 
 variable "tier" {
@@ -97,9 +105,10 @@ variable "geo_redundant_backup_enabled" {
   default     = true
 }
 
-variable "databases_names" {
-  description = "List of databases names"
-  type        = list(string)
+variable "mariadb_configurations" {
+  description = "MariaDB configurations to enable"
+  type        = map(string)
+  default     = {}
 }
 
 variable "mariadb_version" {
@@ -114,6 +123,11 @@ variable "force_ssl" {
   default     = true
 }
 
+variable "databases_names" {
+  description = "List of databases names"
+  type        = list(string)
+}
+
 variable "databases_charset" {
   description = "Specifies the Charset for each MariaDB Database : https://mariadb.com/kb/en/library/setting-character-sets-and-collations/"
   type        = map(string)
@@ -126,14 +140,44 @@ variable "databases_collation" {
   default     = {}
 }
 
-variable "vnet_rules" {
-  description = "Map of vnet rules to create"
-  type        = map(string)
-  default     = {}
+variable "enable_logs_to_storage" {
+  description = "Boolean flag to specify whether the logs should be sent to the Storage Account"
+  type        = bool
+  default     = false
 }
 
-variable "mariadb_configurations" {
-  description = "MariaDB configurations to enable"
-  type        = map(string)
-  default     = {}
+variable "enable_logs_to_log_analytics" {
+  description = "Boolean flag to specify whether the logs should be sent to Log Analytics"
+  type        = bool
+  default     = false
+}
+
+variable "logs_storage_retention" {
+  description = "Retention in days for logs on Storage Account"
+  type        = string
+  default     = "30"
+}
+
+variable "logs_storage_account_id" {
+  description = "Storage Account id for logs"
+  type        = string
+  default     = ""
+}
+
+variable "logs_log_analytics_workspace_id" {
+  description = "Log Analytics Workspace id for logs"
+  type        = string
+  default     = ""
+}
+
+variable "create_databases_users" {
+  description = "True to create a user named <db>(_user) per database with generated password."
+  type        = bool
+  default     = true
+}
+
+variable "enable_user_suffix" {
+  description = "True to append a _user suffix to database users"
+  type        = bool
+  default     = false
 }

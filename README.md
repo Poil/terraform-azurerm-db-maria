@@ -4,7 +4,7 @@
 This module creates a [MariaDB Server](https://docs.microsoft.com/en-us/azure/mariadb/) with one or several databases.
 
 ## Version compatibility
- 
+
 | Module version    | Terraform version | AzureRM version |
 |-------------------|-------------------|-----------------|
 | >= 3.x.x          | 0.12.x            | >= 2.10         |
@@ -62,40 +62,45 @@ module "db-maria" {
   auto_grow_enabled             = false
 
   administrator_login    = var.administrator_login
-  administrator_password = var.administrator_password
 
   force_ssl = true
 
   databases_names     = ["mydatabase"]
   databases_collation = { mydatabase = "en_US" }
-  databases_charset   = { mydatabase = "UTF8" }
+  databases_charset   = { mydatabase = "utf8" }
 
-  extra_tags = var.extra_tags 
+  extra_tags = var.extra_tags
 }
-
 ```
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| administrator\_login | MariaDB administrator login | `string` | n/a | yes |
-| administrator\_password | MariaDB administrator password. Strong Password : https://docs.microsoft.com/en-us/sql/relational-databases/security/strong-passwords?view=sql-server-2017 | `string` | n/a | yes |
+| administrator\_login | MariaDB administrator login | `string` | `"dbadmin"` | no |
+| administrator\_password | MariaDB administrator password. Auto-generated if empty. Strong Password : https://docs.microsoft.com/en-us/sql/relational-databases/security/strong-passwords?view=sql-server-2017 | `string` | `""` | no |
 | authorized\_cidrs | Map of authorized cidrs, must be provided using remote states cloudpublic/cloudpublic/global/vars/terraform.state | `map(string)` | n/a | yes |
 | auto\_grow\_enabled | Enable/Disable auto-growing of the storage. | `bool` | `false` | no |
 | backup\_retention\_days | Backup retention days for the server, supported values are between 7 and 35 days. | `number` | `10` | no |
 | capacity | Capacity for MariaDB server sku : https://www.terraform.io/docs/providers/azurerm/r/mariadb_server.html#sku_name | `number` | `4` | no |
 | client\_name | Name of client | `string` | n/a | yes |
+| create\_databases\_users | True to create a user named <db>(\_user) per database with generated password. | `bool` | `true` | no |
 | custom\_server\_name | Custom Server Name identifier | `string` | `""` | no |
 | databases\_charset | Specifies the Charset for each MariaDB Database : https://mariadb.com/kb/en/library/setting-character-sets-and-collations/ | `map(string)` | `{}` | no |
 | databases\_collation | Specifies the Collation for each MariaDB Database : https://mariadb.com/kb/en/library/setting-character-sets-and-collations/ | `map(string)` | `{}` | no |
 | databases\_names | List of databases names | `list(string)` | n/a | yes |
+| enable\_logs\_to\_log\_analytics | Boolean flag to specify whether the logs should be sent to Log Analytics | `bool` | `false` | no |
+| enable\_logs\_to\_storage | Boolean flag to specify whether the logs should be sent to the Storage Account | `bool` | `false` | no |
+| enable\_user\_suffix | True to append a \_user suffix to database users | `bool` | `false` | no |
 | environment | Name of application's environnement | `string` | n/a | yes |
 | extra\_tags | Extra tags to add | `map(string)` | `{}` | no |
 | force\_ssl | Force usage of SSL | `bool` | `true` | no |
 | geo\_redundant\_backup\_enabled | Turn Geo-redundant server backups on/off. Not available for the Basic tier. | `bool` | `true` | no |
 | location | Azure location for Key Vault. | `string` | n/a | yes |
 | location\_short | Short string for Azure location. | `string` | n/a | yes |
+| logs\_log\_analytics\_workspace\_id | Log Analytics Workspace id for logs | `string` | `""` | no |
+| logs\_storage\_account\_id | Storage Account id for logs | `string` | `""` | no |
+| logs\_storage\_retention | Retention in days for logs on Storage Account | `string` | `"30"` | no |
 | mariadb\_configurations | MariaDB configurations to enable | `map(string)` | `{}` | no |
 | mariadb\_version | Specifies the version of MariaDB to use. Possible values are 10.2 and 10.3 | `string` | `"10.2"` | no |
 | name\_prefix | Optional prefix for MariaDB server name | `string` | `""` | no |
@@ -110,6 +115,7 @@ module "db-maria" {
 | Name | Description |
 |------|-------------|
 | mariadb\_administrator\_login | Administrator login for mariadb server |
+| mariadb\_administrator\_password | Administrator password for mariadb server |
 | mariadb\_configurations | The map of all mariadb configurations set |
 | mariadb\_database\_ids | The map of all database resource ids |
 | mariadb\_databases\_names | Map of databases names |

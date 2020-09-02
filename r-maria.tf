@@ -1,19 +1,24 @@
 resource "azurerm_mariadb_server" "mariadb_server" {
-  name                = coalesce(var.custom_server_name, local.server_name)
+  name                = coalesce(
+    var.custom_server_name,
+    local.default_server_name
+  )
+
   location            = var.location
   resource_group_name = var.resource_group_name
 
   sku_name = join("_", [lookup(local.tier_map, var.tier, "GeneralPurpose"), "Gen5", var.capacity])
 
-  storage_mb                   = var.storage_mb
   backup_retention_days        = var.backup_retention_days
   geo_redundant_backup_enabled = var.geo_redundant_backup_enabled
+  storage_mb                   = var.storage_mb
   auto_grow_enabled            = var.auto_grow_enabled
 
   administrator_login          = var.administrator_login
-  administrator_login_password = var.administrator_password
+  administrator_login_password = local.administrator_password
   version                      = var.mariadb_version
   ssl_enforcement_enabled      = var.force_ssl
+
   tags                         = merge(local.default_tags, var.extra_tags)
 }
 
@@ -22,8 +27,8 @@ resource "azurerm_mariadb_database" "mariadb_db" {
   name                = each.value
   resource_group_name = var.resource_group_name
   server_name         = azurerm_mariadb_server.mariadb_server.name
-  charset             = lookup(var.databases_charset, each.value, "UTF8")
-  collation           = lookup(var.databases_collation, each.value, "en-US")
+  charset             = lookup(var.databases_charset, each.value, "utf8mb4")
+  collation           = lookup(var.databases_collation, each.value, "utf8mb4_unicode_ci")
 }
 
 resource "azurerm_mariadb_configuration" "mariadb_config" {
@@ -32,4 +37,10 @@ resource "azurerm_mariadb_configuration" "mariadb_config" {
   resource_group_name = var.resource_group_name
   server_name         = azurerm_mariadb_server.mariadb_server.name
   value               = each.value
+}
+
+resource "random_password" "mariadb_administrator_password" {
+  length           = 32
+  special          = true
+  override_special = "@#%&*()-_=+[]{}<>:?"
 }
