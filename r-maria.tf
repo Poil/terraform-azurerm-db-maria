@@ -1,5 +1,5 @@
 resource "azurerm_mariadb_server" "mariadb_server" {
-  name                = coalesce(
+  name = coalesce(
     var.custom_server_name,
     local.default_server_name
   )
@@ -19,7 +19,7 @@ resource "azurerm_mariadb_server" "mariadb_server" {
   version                      = var.mariadb_version
   ssl_enforcement_enabled      = var.force_ssl
 
-  tags                         = merge(local.default_tags, var.extra_tags)
+  tags = merge(local.default_tags, var.extra_tags)
 }
 
 resource "azurerm_mariadb_database" "mariadb_db" {

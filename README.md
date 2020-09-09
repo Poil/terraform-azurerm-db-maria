@@ -100,7 +100,7 @@ module "db-maria" {
 | location\_short | Short string for Azure location. | `string` | n/a | yes |
 | logs\_log\_analytics\_workspace\_id | Log Analytics Workspace id for logs | `string` | `""` | no |
 | logs\_storage\_account\_id | Storage Account id for logs | `string` | `""` | no |
-| logs\_storage\_retention | Retention in days for logs on Storage Account | `string` | `"30"` | no |
+| logs\_storage\_retention | Retention in days for logs on Storage Account | `number` | `30` | no |
 | mariadb\_configurations | MariaDB configurations to enable | `map(string)` | `{}` | no |
 | mariadb\_version | Specifies the version of MariaDB to use. Possible values are 10.2 and 10.3 | `string` | `"10.2"` | no |
 | name\_prefix | Optional prefix for MariaDB server name | `string` | `""` | no |
