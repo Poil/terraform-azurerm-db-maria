@@ -10,6 +10,11 @@ output "mariadb_administrator_password" {
   sensitive   = true
 }
 
+output "mariadb_databases" {
+  value       = azurerm_mariadb_database.mariadb_db
+  description = "Map of databases infos"
+}
+
 output "mariadb_databases_names" {
   value       = var.databases_names
   description = "List of databases names"
@@ -55,4 +60,10 @@ output "mariadb_databases_users_passwords" {
 output "mariadb_configurations" {
   value       = azurerm_mariadb_configuration.mariadb_config
   description = "The map of all mariadb configurations set"
+}
+
+output "mysql_users" {
+  description = "Map of created users corresponding to input databases names."
+  value       = mysql_user.users
+  sensitive   = true
 }

@@ -7,10 +7,10 @@ This module creates a [MariaDB Server](https://docs.microsoft.com/en-us/azure/ma
 
 | Module version    | Terraform version | AzureRM version |
 |-------------------|-------------------|-----------------|
+| >= 4.x.x          | 0.13.x            | >= 2.0          |
 | >= 3.x.x          | 0.12.x            | >= 2.10         |
 | >= 2.x.x, < 3.x.x | 0.12.x            | <  2.0          |
 | <  2.x.x          | 0.11.x            | <  2.0          |
-
 
 ## Usage
 
@@ -73,6 +73,14 @@ module "db-maria" {
 }
 ```
 
+## Providers
+
+| Name | Version |
+|------|---------|
+| azurerm | >= 2.10 |
+| mysql.create-users | >= 1.5 |
+| random | n/a |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -117,8 +125,10 @@ module "db-maria" {
 | mariadb\_administrator\_login | Administrator login for mariadb server |
 | mariadb\_administrator\_password | Administrator password for mariadb server |
 | mariadb\_configurations | The map of all mariadb configurations set |
-| mariadb\_database\_ids | The map of all database resource ids |
-| mariadb\_databases\_names | Map of databases names |
+| mariadb\_database\_ids | List of all database resource ids |
+| mariadb\_databases\_names | List of databases names |
+| mariadb\_databases\_users | List of usernames of created users corresponding to input databases names. |
+| mariadb\_databases\_users\_passwords | List of passwords of created users corresponding to input databases names. |
 | mariadb\_firewall\_rules | Map of mariadb created rules |
 | mariadb\_fqdn | FQDN of the mariadb server |
 | mariadb\_server\_id | mariadb server ID |
